@@ -1,0 +1,63 @@
+@charset "utf-8";
+
+* {
+	padding: 0px;
+	margin: 0px;
+}
+
+table, table td {
+	text-align: center;
+}
+
+table td {
+	/* border: 1px solid black; */
+	width: auto;
+	padding: 7px;
+}
+
+#gnb {
+	overflow: hidden; /* ul 밑에 있는게 float : left 되는걸 막으려고*/
+	border-top: 1px solid #333333;
+	border-bottom: 1px solid #333333;
+}
+
+#gnb>li {
+	float: left; /*li를 수평으로 나열*/
+	list-style: none;
+	padding: 10px;
+	margin: 10px;
+}
+
+h1.title {
+	padding: 20px;
+}
+
+#contents {
+	padding: 15px;
+}
+
+a {
+	text-decoration: none;
+}
+
+h2, td {
+	padding: 10px;
+}
+/* #memberPhoto {
+	background-image:url('${pageContext.request.contextPath}/uploadFile/userphoto/${logininfo.userPhoto}');
+	background-size: 100%;
+	width: 150px;
+	height: 150px;
+	border: 1px solid black;
+	border-radius: 75px;
+	margin: 20px 0;
+} */ /* #memberPhoto>img {
+	width: 150px;
+	height: 150px;
+	border: 1px solid gray;
+	border-radius: 50%;
+} */
+img {
+	width: 150px;
+	height: 150px;
+}

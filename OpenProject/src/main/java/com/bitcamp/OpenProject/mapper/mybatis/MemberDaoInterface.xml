@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bitcamp.OpenProject.member.memberDao.MemberDaoInterface">
+
+	<insert id="insertMemberInfo"
+		parameterType="com.bitcamp.OpenProject.member.model.MemberInfo"
+		useGeneratedKeys="true" keyProperty="idx">
+		insert into webmember
+		(userid,userPw,username,userphoto)
+		values(#{userID},#{userPW},#{userName},#{userPhoto})
+	</insert>
+
+	<select id="getMemberInfo"
+		resultType="com.bitcamp.OpenProject.member.model.MemberInfo">
+		select * from webmember where userid= #{userID}
+	</select>
+
+	<update id="ModifyMemberInfo"
+		parameterType="com.bitcamp.OpenProject.member.model.MemberInfo">
+		update webmember set userPW=${userPW},
+		username=#{userName}, userPhoto=#{userPhoto} where userId=#{userID}
+	</update>
+
+</mapper>

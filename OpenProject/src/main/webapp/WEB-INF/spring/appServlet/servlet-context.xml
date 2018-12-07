@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+	xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing 
+		infrastructure -->
+
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving 
+		up static resources in the ${webappRoot}/resources directory -->
+	<!-- 정적인 item이라고 예외처리 해주는 것 -->
+	<resources mapping="/resources/**" location="/resources/" />
+	<resources mapping="/css/**" location="/css/" />
+	<resources mapping="/uploadfile/**" location="/uploadfile/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
+		in the /WEB-INF/views directory -->
+	<beans:bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+
+	<!-- 파일업로드 처리를 위한 multipartResolver bean 등록 -->
+	<beans:bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="defaultEncoding">
+			<beans:value>utf-8</beans:value>
+		</beans:property>
+	</beans:bean>
+
+	<context:component-scan
+		base-package="com.bitcamp.OpenProject" />
+
+	<interceptors>
+		<interceptor>
+			<mapping path="/**" />
+			<exclude-mapping path="/css/**" />
+			<exclude-mapping path="/LoginForm" />
+			<exclude-mapping path="/Logout" />
+			<exclude-mapping path="/MemberRegForm" />
+			<exclude-mapping path="/" />
+			<beans:bean
+				class="com.bitcamp.OpenProject.interceptor.AuthCheckInterceptor"></beans:bean>
+		</interceptor>
+	</interceptors>
+
+	<!-- MemberDao 등록 -->
+	<beans:bean id="memberDao"
+		class="com.bitcamp.OpenProject.member.memberDao.MemberDao"></beans:bean>
+
+	<beans:bean id="messageDao"
+		class="com.bitcamp.OpenProject.Dao.MessageDao"></beans:bean>
+
+	<beans:bean id="jdbcTemplateMemberDao"
+		class="com.bitcamp.OpenProject.member.memberDao.JdbcTemplateMemberDao"></beans:bean>
+
+	<beans:bean id="jdbcTemplateMessageDao"
+		class="com.bitcamp.OpenProject.Dao.JdbcTemplateMessageDao"></beans:bean>
+
+	<beans:bean id="mybatisMemberDao"
+		class="com.bitcamp.OpenProject.member.memberDao.MyBatisMemberDao"></beans:bean>
+
+
+	<!-- DataSource 등록 -->
+	<!-- <beans:bean id="dataSource"
+		class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<beans:property name="driverClass"
+			value="com.mysql.jdbc.Driver" />
+		<beans:property name="jdbcUrl"
+			value="jdbc:mysql://127.0.0.1:3306/openproject?characterEncoding=utf8" />
+		<beans:property name="user" value="scott" />
+		<beans:property name="password" value="tiger" />
+	</beans:bean> -->
+	
+	<!-- DataSource 등록 -->
+	<beans:bean id="dataSource"
+		class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<beans:property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<beans:property name="jdbcUrl"
+			value="jdbc:mysql://openproject.clwqpjqb5q1u.ap-northeast-2.rds.amazonaws.com/openproject?characterEncoding=utf8" />
+		<beans:property name="user" value="hajiseung" />
+		<beans:property name="password" value="hajiseung" />
+	</beans:bean>
+
+	<!-- Spring - MyBatis 연동 설정 -->
+	<beans:bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<beans:property name="dataSource" ref="dataSource"></beans:property>
+		<beans:property name="mapperLocations"
+			value="classpath:com/bitcamp/OpenProject/mapper/mybatis/*.xml"></beans:property>
+	</beans:bean>
+
+
+	<!-- 트랜잭션 처리 -->
+	<beans:bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<beans:property name="dataSource" ref="dataSource" />
+	</beans:bean>
+
+	<tx:annotation-driven
+		transaction-manager="transactionManager" />
+
+	<!-- JDBCTemplate Bean 등록 -->
+	<beans:bean id="jdbcTemplate"
+		class="org.springframework.jdbc.core.JdbcTemplate"
+		p:dataSource-ref="dataSource" />
+
+	<!-- SqlSessionTemplate 등록 -->
+	<beans:bean id="sqlSession"
+		class="org.mybatis.spring.SqlSessionTemplate">
+		<beans:constructor-arg index="0"
+			ref="sqlSessionFactory"></beans:constructor-arg>
+	</beans:bean>
+
+	<!-- Service 등록 -->
+	<beans:bean id="memberRegService"
+		class="com.bitcamp.OpenProject.member.service.MemberRegService"></beans:bean>
+
+	<beans:bean id="memberListService"
+		class="com.bitcamp.OpenProject.member.service.MemberGetListService"></beans:bean>
+
+	<beans:bean id="memberLoginService"
+		class="com.bitcamp.OpenProject.member.service.MemberLoginService"></beans:bean>
+
+	<beans:bean id="memberModifyService"
+		class="com.bitcamp.OpenProject.member.service.MemberModifyService"></beans:bean>
+
+	<beans:bean id="memberDeleteService"
+		class="com.bitcamp.OpenProject.member.service.MemberDeleteService"></beans:bean>
+
+	<beans:bean id="guestBookService"
+		class="com.bitcamp.OpenProject.member.service.GuestBookWriteService"></beans:bean>
+
+	<beans:bean id="guestBookList"
+		class="com.bitcamp.OpenProject.member.service.GuestBookListService"></beans:bean>
+
+	<beans:bean id="guestBookGetMessage"
+		class="com.bitcamp.OpenProject.member.service.GuestBookGetViewService"></beans:bean>
+
+	<beans:bean id="guestBookDeleteMessage"
+		class="com.bitcamp.OpenProject.member.service.GuestBookDeleteService"></beans:bean>
+</beans:beans>
